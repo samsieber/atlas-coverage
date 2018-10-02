@@ -1,37 +1,59 @@
 use util;
+use globset::{Glob, GlobSetBuilder, GlobSet};
+use serde::Deserializer;
+use serde::de::Visitor;
+use std::fmt;
+use serde::de::SeqAccess;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Settings {
     pub public_url_base: String,
     pub dist_path: String,
 
     pub dist_coverage_path: String,
     pub dist_coverage_url: String,
-    pub patterns_base: String,
 
-    pub patterns: Vec<String>,
+    pub sources: Sources,
 }
 
-impl Settings {
-    pub fn new(
-        url_base: impl Into<String>,
-        serving_base: impl Into<String>,
-        code_base: impl Into<String>,
-        code_serve_base: impl Into<String>,
-        file_base: impl Into<String>,
-        patterns: Vec<impl Into<String>>,
-    ) -> Settings {
-        Settings {
-            public_url_base: url_base.into(),
-            dist_path: serving_base.into(),
-            dist_coverage_path: code_base.into(),
-            dist_coverage_url: code_serve_base.into(),
-            patterns_base: file_base.into(),
-            patterns: patterns.into_iter().map(|s| s.into()).collect(),
+#[derive(Debug, Deserialize)]
+pub struct Sources {
+    pub base: String,
+    #[serde(deserialize_with="deserialize_globset")]
+    pub dirs: GlobSet,
+    #[serde(deserialize_with="deserialize_globset")]
+    pub excludes: GlobSet,
+}
+
+fn deserialize_globset<'de, D>(deserializer: D) -> Result<GlobSet, D::Error>
+    where D: Deserializer<'de>,
+{
+    struct GlobSetVisitor{};
+
+    impl<'de> Visitor<'de> for GlobSetVisitor {
+        type Value = GlobSet;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            write!(formatter, "expected a list of glob strings")
+        }
+
+        fn visit_seq<S>(self, mut seq: S) -> Result<GlobSet, S::Error> where S: SeqAccess<'de>,
+        {
+            let mut builder = GlobSetBuilder::new();
+
+            while let Some(value) = seq.next_element::<String>()? {
+                builder.add(Glob::new(&value).unwrap());
+            }
+
+            Ok(builder.build().unwrap())
         }
     }
-}
 
+    // Create the visitor and ask the deserializer to drive it. The
+    // deserializer will call visitor.visit_seq() if a seq is present in
+    // the input data.
+    deserializer.deserialize_seq(GlobSetVisitor{})
+}
 pub fn from_root() -> Settings {
     use std::env;
 

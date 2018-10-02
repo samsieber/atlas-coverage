@@ -19,14 +19,14 @@ pub struct Coord {
 
 #[derive(Debug)]
 pub struct FileCoverage {
-    path: String,
-    lines: Vec<LineCoverage>,
+    pub path: String,
+    pub lines: Vec<LineCoverage>,
 }
 
 #[derive(Debug)]
 pub struct LineCoverage {
-    line_number: usize,
-    covered: bool,
+    pub line_number: usize,
+    pub covered: bool,
 }
 
 pub fn calculate_executable_line_mappings(

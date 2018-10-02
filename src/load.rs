@@ -22,7 +22,13 @@ pub fn load_items<P: AsRef<Path>>(paths: Vec<P>) -> Loader{
     let mut loader = load::Loader::new();
 
     for p in paths {
-        let raw_content = util::fast_read(p.as_ref()).expect(&format!("File {} does not exist", p.as_ref().to_string_lossy()));
+        let raw_content = match util::fast_read(p.as_ref()){
+            Ok(value) => {value},
+            Err(err) => {
+                eprintln!("Cannot load {} - {:#?}", p.as_ref().to_string_lossy(), err);
+                continue
+            },
+        };
         loader.add_json_data(&mut JsonDeserializer::from_slice(&raw_content.as_bytes()));
     }
 

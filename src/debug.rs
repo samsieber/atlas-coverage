@@ -11,10 +11,17 @@ use source_map::process_references;
 use lines::calculate_line_coverage;
 use load;
 use serde_json::Deserializer;
+use std::env::current_dir;
+use std::env::args;
+use std::fs;
+use lines::FileCoverage;
 
 pub fn print_existing(settings: Settings, json_path: String) {
-//    let values: Vec<PuppeteerData> = deserialize_object(json_path).unwrap();
-    let values = load::load_items(vec!(json_path));
+    let args: Vec<String> = args().collect();
+    let reads = fs::read_dir(current_dir().expect("Not in a valid directory").join(&args[1])).expect("Cannot read directory");
+    let paths = reads.into_iter().map(|v| v.expect("Cannot read file entry").path()).collect::<Vec<_>>();
+
+    let values = load::load_items(paths);
 
     for v in values {
         print_if_has_existing_source_map(&settings, v);
@@ -31,6 +38,8 @@ fn print_if_has_existing_source_map(settings: &Settings, data: PuppeteerData) {
             .unwrap()
             .join(source_mapping_url.clone());
 
+        println!("{} - {}", source_mapping_url, data.url);
+
         let source_mapping_path = Path::new(&source_mapping_path);
         if source_mapping_path.exists() {
             let source_map: SourceMap = util::deserialize_object(source_mapping_path).unwrap();
@@ -46,10 +55,30 @@ fn print_if_has_existing_source_map(settings: &Settings, data: PuppeteerData) {
 
             let file_refs = references.iter().map(|s| s.file_path.clone()).collect();
             let line_refs = calculate_executable_line_mappings(&source_map, references);
-            let file_coverage =
+            let file_coverage : Vec<FileCoverage> =
                 calculate_line_coverage(data.ranges, line_refs, file_refs, data.text.as_str());
 
-            println!("{}:\n------------------------------------------------------------------------------------------------\n{:#?}\n-=-=-=-=-=-=-=-=-\n{:#?}", source_mapping_path.to_string_lossy(), meta_refs, file_coverage);
+            file_coverage.iter().for_each(|fc| {
+                let content = util::fast_read(&fc.path);
+                match content {
+                    Ok(content) => {
+                        let lines = content.lines().count();
+                        let cov_lines = fc.lines.iter().last().map(|v| v.line_number);
+                        match cov_lines {
+                            Some(last_line) => {
+                                println!("Within bounds? {: <5} || {: <5} - {: <5}", last_line <= lines, lines, last_line);
+                            },
+                            None => {
+                                println!("Empty file");
+                            }
+                        }
+                    },
+                    Err(err) => {
+                        println!("Within bounds? {: <5} - {} doesn't exist or is empty!", false, &fc.path)
+                    },
+                }
+            })
+//            println!("{}:\n------------------------------------------------------------------------------------------------\n{:#?}\n-=-=-=-=-=-=-=-=-\n{:#?}", source_mapping_path.to_string_lossy(), meta_refs, file_coverage);
         }
     }
 

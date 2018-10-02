@@ -4,6 +4,8 @@ use settings::Settings;
 use std::path::Path;
 use std::path::PathBuf;
 use util;
+use settings::Sources;
+use globset::Candidate;
 
 #[derive(Debug, Clone)]
 pub enum SourceType {
@@ -30,6 +32,14 @@ pub struct SourceMapSource {
 pub struct NoContentSourceMapSource {
     pub file_path: FilePath,
     pub source_type: SourceType,
+}
+
+impl Sources {
+    fn is_source_file(&self, path: &str) -> bool {
+        let chopped = path.replace(&self.base, "");
+        let candidate = Candidate::new(&chopped);
+        self.dirs.is_match_candidate(&candidate) && !self.excludes.is_match_candidate(&candidate)
+    }
 }
 
 pub fn process_references(settings: &Settings, source_map: &SourceMap) -> Vec<SourceMapSource> {
@@ -69,7 +79,7 @@ pub fn process_references(settings: &Settings, source_map: &SourceMap) -> Vec<So
 
             let source_type = if abs_source_path.contains("node_modules") {
                 SourceType::NodeModules
-            } else if settings.patterns.iter().any(|ref p| abs_source_path.replace(&settings.patterns_base, "").starts_with(p.as_str())) {
+            } else if settings.sources.is_source_file(&abs_source_path) {
                 SourceType::User
             } else {
                 SourceType::Generated
@@ -110,5 +120,24 @@ impl SourceMapSource {
             file_path: self.file_path.clone(),
             source_type: self.source_type.clone(),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+
+    use settings::Sources;
+    use globset::{Glob, GlobSetBuilder};
+
+    #[test]
+    fn test_is_source() {
+        let sources = Sources {
+            base: "/test/base/".to_string(),
+            dirs: GlobSetBuilder::new().add(Glob::new("src/**").unwrap()).build().unwrap(),
+            excludes: GlobSetBuilder::new().build().unwrap(),
+        };
+
+        assert_eq!(true, sources.is_source_file("/test/base/src/some_file"));
+        assert_eq!(true, sources.is_source_file("/test/base/src/nested/some_file"));
     }
 }

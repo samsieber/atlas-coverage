@@ -4,6 +4,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate vlq;
 extern crate xml;
+extern crate globset;
 
 pub mod debug;
 pub mod settings;
@@ -57,15 +58,13 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
     }
 }
 
-pub fn run(settings: Settings, json_path: Vec<impl AsRef<Path>>, take: usize, skip: Option<usize>) {
+pub fn run(settings: Settings, json_path: Vec<impl AsRef<Path>>) {
     let values = load::load_items(json_path);
     let processed: Vec<_> = values
         .into_iter()
         .map(|value| process_source_map(&settings, value))
         .flat_map(|value| value.into_iter())
         .flat_map(|value| value.into_iter())
-//        .skip(skip.unwrap_or(0))
-//        .take(take)
         .collect();
 
     let many_coverage = ManyCoverage { files: processed };
