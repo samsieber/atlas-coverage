@@ -11,6 +11,7 @@ use model;
 use range::Range;
 use std::path::Path;
 use util;
+use serde_json::Error;
 
 pub struct RawCoveragePart {
     text: String,
@@ -29,7 +30,12 @@ pub fn load_items<P: AsRef<Path>>(paths: Vec<P>) -> Loader{
                 continue
             },
         };
-        loader.add_json_data(&mut JsonDeserializer::from_slice(&raw_content.as_bytes()));
+        match loader.add_json_data(&mut JsonDeserializer::from_slice(&raw_content.as_bytes())) {
+            Ok(_) => {},
+            Err(error) => {
+                eprintln!("Could not parse json for {} - {:#?}", p.as_ref().to_string_lossy(), error);
+            },
+        };
     }
 
     loader
@@ -77,11 +83,11 @@ impl Loader {
     pub fn add_json_data<'de>(
         &mut self,
         deserializer: &mut JsonDeserializer<impl serde_json::de::Read<'de>>,
-    ) {
+    ) -> Result<(), Error>{
         let visitor: VisitorAppender<'_> = VisitorAppender {
             parts: &mut self.parts,
         };
-        deserializer.deserialize_seq(visitor).unwrap();
+        Ok(deserializer.deserialize_seq(visitor)?)
     }
 }
 
@@ -199,7 +205,7 @@ mod test {
         let mut deserializer = JsonDeserializer::from_slice(data.as_bytes());
         let mut loader = Loader::new();
 
-        loader.add_json_data(&mut deserializer);
+        loader.add_json_data(&mut deserializer).unwrap();
 
         let combined: Vec<PuppeteerData> = serde_json::from_str(combined_data).unwrap();
 

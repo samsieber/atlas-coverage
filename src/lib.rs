@@ -5,10 +5,12 @@ extern crate serde_json;
 extern crate vlq;
 extern crate xml;
 extern crate globset;
+extern crate lcov_parser;
 
 pub mod debug;
 pub mod settings;
 
+mod lcov;
 mod lines;
 mod load;
 mod model;
@@ -26,7 +28,8 @@ use lines::ManyCoverage;
 use model::{PuppeteerData, SourceMap};
 use settings::Settings;
 use source_map::*;
-use std::env::args;
+use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Vec<FileCoverage>> {
     if let Some(source_mapping_url) = data.get_source_mapping_url() {
@@ -46,8 +49,26 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
 
             let file_refs = references.iter().map(|s| s.file_path.clone()).collect();
             let line_refs = calculate_executable_line_mappings(&source_map, references);
-            let file_coverage =
+            let mut file_coverage =
                 calculate_line_coverage(data.ranges, line_refs, file_refs, data.text.as_str());
+
+            if let Some(ref reify_against_lcov) = settings.reify_against_lcov {
+                file_coverage = {
+                    let mut file_hash_map: HashMap<_,_> = file_coverage.into_iter().map(|v| (v.path.clone(), v)).collect();
+
+                    for line_data in lcov::LcovFilesLines::new(&util::fast_read(&reify_against_lcov).unwrap()) {
+
+                        let our_coverage = file_hash_map.get_mut(&line_data.file_path);
+                        our_coverage.map(|our_coverage| {
+                            let new_lines : HashSet<_> = line_data.lines.into_iter().collect();
+
+                            our_coverage.lines.retain(|v| new_lines.contains(&v.line_number));
+                        });
+                    }
+
+                    file_hash_map.into_iter().map(|(_k,v)| v).collect()
+                }
+            }
 
             Some(file_coverage)
         } else {

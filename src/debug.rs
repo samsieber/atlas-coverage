@@ -1,6 +1,5 @@
 use settings::Settings;
 use model::PuppeteerData;
-use util::deserialize_object;
 use model::SourceMap;
 use source_map::SourceMapSource;
 use vlq_decode;
@@ -10,13 +9,12 @@ use lines::calculate_executable_line_mappings;
 use source_map::process_references;
 use lines::calculate_line_coverage;
 use load;
-use serde_json::Deserializer;
 use std::env::current_dir;
 use std::env::args;
 use std::fs;
 use lines::FileCoverage;
 
-pub fn print_existing(settings: Settings, json_path: String) {
+pub fn print_existing(settings: Settings) {
     let args: Vec<String> = args().collect();
     let reads = fs::read_dir(current_dir().expect("Not in a valid directory").join(&args[1])).expect("Cannot read directory");
     let paths = reads.into_iter().map(|v| v.expect("Cannot read file entry").path()).collect::<Vec<_>>();
@@ -46,7 +44,7 @@ fn print_if_has_existing_source_map(settings: &Settings, data: PuppeteerData) {
 
             let references = process_references(&settings, &source_map);
 
-            let meta_refs = references.iter().map(|r| r.meta()).collect::<Vec<_>>();
+            let _meta_refs = references.iter().map(|r| r.meta()).collect::<Vec<_>>();
 //            let meta_refs = references.clone();
 
 //            println!("{:#?}", &references);
@@ -73,7 +71,7 @@ fn print_if_has_existing_source_map(settings: &Settings, data: PuppeteerData) {
                             }
                         }
                     },
-                    Err(err) => {
+                    Err(_err) => {
                         println!("Within bounds? {: <5} - {} doesn't exist or is empty!", false, &fc.path)
                     },
                 }

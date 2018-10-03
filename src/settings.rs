@@ -14,6 +14,8 @@ pub struct Settings {
     pub dist_coverage_url: String,
 
     pub sources: Sources,
+
+    pub reify_against_lcov: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
