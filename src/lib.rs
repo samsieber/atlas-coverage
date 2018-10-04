@@ -30,6 +30,9 @@ use settings::Settings;
 use source_map::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::env::args;
+use std::io::Write;
+use std::io;
 
 pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Vec<FileCoverage>> {
     if let Some(source_mapping_url) = data.get_source_mapping_url() {
@@ -40,6 +43,8 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
             .parent()
             .unwrap()
             .join(source_mapping_url);
+
+        println!("Processing source map {}", source_mapping_path.to_string_lossy());
 
         let source_mapping_path = Path::new(&source_mapping_path);
         if source_mapping_path.exists() {
@@ -54,6 +59,8 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
 
             if let Some(ref reify_against_lcov) = settings.reify_against_lcov {
                 file_coverage = {
+                    eprintln!("Reifying against LCOV file");
+
                     let mut file_hash_map: HashMap<_,_> = file_coverage.into_iter().map(|v| (v.path.clone(), v)).collect();
 
                     for line_data in lcov::LcovFilesLines::new(&util::fast_read(&reify_against_lcov).unwrap()) {
@@ -79,7 +86,7 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
     }
 }
 
-pub fn run(settings: Settings, json_path: Vec<impl AsRef<Path>>) {
+pub fn run<P: AsRef<Path>, W: Write>(settings: Settings, json_path: Vec<P>, writer: Option<W>) {
     let values = load::load_items(json_path);
     let processed: Vec<_> = values
         .into_iter()
@@ -89,7 +96,15 @@ pub fn run(settings: Settings, json_path: Vec<impl AsRef<Path>>) {
         .collect();
 
     let many_coverage = ManyCoverage { files: processed };
-    many_coverage.write_xml_to_stdout();
+
+    if let Some(writer) = writer {
+        many_coverage.write_xml(writer);
+    } else {
+        let stdout = io::stdout();
+        let handle = stdout.lock();
+
+        many_coverage.write_xml(handle);
+    }
 }
 
 #[cfg(test)]

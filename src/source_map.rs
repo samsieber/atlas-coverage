@@ -80,6 +80,7 @@ pub fn process_references(settings: &Settings, source_map: &SourceMap) -> Vec<So
             let source_type = if abs_source_path.contains("node_modules") {
                 SourceType::NodeModules
             } else if settings.sources.is_source_file(&abs_source_path) {
+                eprintln!("Found source file: {}", &abs_source_path);
                 SourceType::User
             } else {
                 SourceType::Generated

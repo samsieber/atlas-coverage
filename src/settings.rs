@@ -4,6 +4,8 @@ use serde::Deserializer;
 use serde::de::Visitor;
 use std::fmt;
 use serde::de::SeqAccess;
+use std::path::Path;
+use std::error::Error;
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
@@ -56,11 +58,15 @@ fn deserialize_globset<'de, D>(deserializer: D) -> Result<GlobSet, D::Error>
     // the input data.
     deserializer.deserialize_seq(GlobSetVisitor{})
 }
-pub fn from_root() -> Settings {
+
+pub fn from_path(settings_path: impl AsRef<Path>) -> Result<Settings, Box<Error>> {
+    Ok(util::deserialize_object(settings_path)?)
+}
+
+pub fn from_root() -> Result<Settings, Box<Error>> {
     use std::env;
 
-// We assume that we are in a valid directory.
-    let path = env::current_dir().unwrap();
+    let path = env::current_dir()?;
     let settings_path = path.join("settings.json");
-    util::deserialize_object(settings_path).unwrap()
+    from_path(settings_path)
 }

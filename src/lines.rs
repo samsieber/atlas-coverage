@@ -133,6 +133,8 @@ impl ManyCoverage {
             xml_writer.write(XmlEvent::end_element()).unwrap();
         }
         xml_writer.write(XmlEvent::end_element()).unwrap();
+
+        xml_writer.into_inner().flush().expect("Could not flush xml file");
     }
 
     pub fn write_xml_to_stdout(&self) {

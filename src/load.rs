@@ -24,14 +24,19 @@ pub fn load_items<P: AsRef<Path>>(paths: Vec<P>) -> Loader{
 
     for p in paths {
         let raw_content = match util::fast_read(p.as_ref()){
-            Ok(value) => {value},
+            Ok(value) => {
+                eprintln!("Loading {}", p.as_ref().to_string_lossy());
+                value
+            },
             Err(err) => {
                 eprintln!("Cannot load {} - {:#?}", p.as_ref().to_string_lossy(), err);
                 continue
             },
         };
         match loader.add_json_data(&mut JsonDeserializer::from_slice(&raw_content.as_bytes())) {
-            Ok(_) => {},
+            Ok(_) => {
+                eprintln!("Loaded {}", p.as_ref().to_string_lossy());
+            },
             Err(error) => {
                 eprintln!("Could not parse json for {} - {:#?}", p.as_ref().to_string_lossy(), error);
             },
