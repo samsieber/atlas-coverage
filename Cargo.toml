@@ -14,3 +14,10 @@ serde_derive = "1"
 vlq = "0.5"
 globset = "0.4"
 structopt= "0.2"
+
+[profile.release]
+opt-level = 3
+lto = true
+debug = false
+codegen-units = 1
+panic = "abort"

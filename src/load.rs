@@ -87,7 +87,7 @@ impl Loader {
     #[inline]
     pub fn add_json_data<'de>(
         &mut self,
-        deserializer: &mut JsonDeserializer<impl serde_json::de::Read<'de>>,
+        deserializer: &mut JsonDeserializer<impl ::serde_json::de::Read<'de>>,
     ) -> Result<(), Error>{
         let visitor: VisitorAppender<'_> = VisitorAppender {
             parts: &mut self.parts,
@@ -107,9 +107,9 @@ fn convert_to_puppeteer_data((key, value): (String, RawCoveragePart)) -> Puppete
 impl IntoIterator for Loader {
     type Item = PuppeteerData;
     // This is SOOOOOOOO ugly, but at least usable
-    type IntoIter = std::iter::Map<
-        std::collections::hash_map::IntoIter<std::string::String, load::RawCoveragePart>,
-        fn((std::string::String, load::RawCoveragePart)) -> model::PuppeteerData,
+    type IntoIter = ::std::iter::Map<
+        ::std::collections::hash_map::IntoIter<::std::string::String, load::RawCoveragePart>,
+        fn((String, load::RawCoveragePart)) -> model::PuppeteerData,
     >;
 
     fn into_iter(self) -> <Self as IntoIterator>::IntoIter {
@@ -212,7 +212,7 @@ mod test {
 
         loader.add_json_data(&mut deserializer).unwrap();
 
-        let combined: Vec<PuppeteerData> = serde_json::from_str(combined_data).unwrap();
+        let combined: Vec<PuppeteerData> = ::serde_json::from_str(combined_data).unwrap();
 
         assert_eq!(combined, loader.into_iter().collect::<Vec<PuppeteerData>>())
     }

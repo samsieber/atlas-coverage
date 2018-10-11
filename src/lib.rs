@@ -6,6 +6,7 @@ extern crate vlq;
 extern crate xml;
 extern crate globset;
 extern crate lcov_parser;
+extern crate memmap;
 
 pub mod debug;
 pub mod settings;
