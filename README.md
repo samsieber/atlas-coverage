@@ -1,5 +1,5 @@
 # About
-This tool is for processing coverage data on minified javascript.
+This tool is for processing coverage data on minified javascript. Convert code coverage on your `dist` folder into code coverage for your `src` folder.
 
 Specifically, it can read chrome coverage data (from puppeteer), and for any files that reference a source map, calculate the line coverage of the contributing source files.
 
@@ -66,11 +66,11 @@ To run atlas on the coverage data, you'll need a json configuration file for it.
 ```json
 {
     "public_url_base": "http://localhost/assets/js/",
-    "dist_path": "/Users/sam/projects/example/dist",
-    "dist_coverage_path": "/Users/sam/projects/example/builder",
+    "dist_path": "/Users/sam/projects/example/dist/",
+    "dist_coverage_path": "/Users/sam/projects/example/builder/",
     "dist_coverage_url": "webpack:///",
     "sources": {
-        "base": "/Users/sam/projects/example",
+        "base": "/Users/sam/projects/example/",
         "dirs": [
             "src/**",
         ],
@@ -82,6 +82,8 @@ To run atlas on the coverage data, you'll need a json configuration file for it.
     "reify_against_lcov": "/Users/sam/projects/example/test-results/lcov/coverage/lcov.info"
 }
 ```
+
+In this example config, the project I'm getting coverage data for is located on disk at `/Users/sam/projects/example/`, with the js the browser is loading coming from the `dist/` folder. And the tool will take the coverage data for that and convert it into coverage data for the files under the `src/` folder.
 
 ### Running
 
