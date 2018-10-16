@@ -1,0 +1,17 @@
+[package]
+name = "atlas-coverage"
+version = "0.1.0"
+authors = ["Sam Sieber <swsieber@gmail.com>"]
+license = "MIT"
+description = "Extract source level coverage information from puppeteer coverage data on minified files"
+
+[dependencies]
+structopt= "0.2"
+atlas-coverage-core = { path = "../atlas-coverage-core", version = "0.1.0" }
+
+[profile.release]
+opt-level = 3
+lto = true
+debug = false
+codegen-units = 1
+panic = "abort"

@@ -1,7 +1,8 @@
 #[macro_use]
 extern crate structopt;
-extern crate e2e_cc;
+extern crate atlas_coverage_core;
 
+use atlas_coverage_core as e2e_cc;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use std::error::Error;

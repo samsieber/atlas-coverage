@@ -20,6 +20,29 @@ version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "atlas-coverage"
+version = "0.1.0"
+dependencies = [
+ "atlas-coverage-core 0.1.0",
+ "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "atlas-coverage-core"
+version = "0.1.0"
+dependencies = [
+ "ecmascript 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "globset 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lcov-parser 3.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memmap 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.79 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.79 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 1.0.32 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vlq 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "xml-rs 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "atty"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -103,22 +126,6 @@ dependencies = [
  "either 1.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "memchr 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "unreachable 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "e2e-cc"
-version = "0.1.0"
-dependencies = [
- "ecmascript 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "globset 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "lcov-parser 3.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "memmap 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.79 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.79 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_json 1.0.32 (registry+https://github.com/rust-lang/crates.io-index)",
- "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "vlq 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "xml-rs 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
