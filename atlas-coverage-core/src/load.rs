@@ -212,8 +212,12 @@ mod test {
 
         loader.add_json_data(&mut deserializer).unwrap();
 
-        let combined: Vec<PuppeteerData> = ::serde_json::from_str(combined_data).unwrap();
+        let mut combined: Vec<PuppeteerData> = ::serde_json::from_str(combined_data).unwrap();
+        let mut loaded = loader.into_iter().collect::<Vec<PuppeteerData>>();
 
-        assert_eq!(combined, loader.into_iter().collect::<Vec<PuppeteerData>>())
+        combined.sort_by_key(|v| v.url.clone());
+        loaded.sort_by_key(|v| v.url.clone());
+
+        assert_eq!(combined, loaded)
     }
 }
