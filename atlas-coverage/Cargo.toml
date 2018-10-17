@@ -1,6 +1,6 @@
 [package]
 name = "atlas-coverage"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Sam Sieber <swsieber@gmail.com>"]
 license = "MIT"
 description = "Extract source level coverage information from puppeteer coverage data on minified files"

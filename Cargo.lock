@@ -21,7 +21,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "atlas-coverage"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "atlas-coverage-core 0.1.0",
  "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
