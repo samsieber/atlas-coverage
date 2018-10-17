@@ -19,9 +19,11 @@ main() {
 
     # TODO Update this to build the artifacts that matter to you
     # This builds everything, so... good enough?
-    cross build --target $TARGET --release -- -C lto
+    cross build --target $TARGET --release
 
     cp target/$TARGET/release/atlas-coverage $stage/
+
+    strip $stage/atlas-coverage
 
     cd $stage
     tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
