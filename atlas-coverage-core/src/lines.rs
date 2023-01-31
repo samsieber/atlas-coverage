@@ -1,11 +1,11 @@
-use model::SourceMap;
-use range::RangeStack;
-use source_map::FilePath;
-use source_map::SourceMapSource;
+use crate::model::SourceMap;
+use crate::range::RangeStack;
+use crate::source_map::FilePath;
+use crate::source_map::SourceMapSource;
 use std::collections::BTreeMap;
 use std::io;
 use std::io::Write;
-use vlq_decode;
+use crate::vlq_decode;
 use xml::writer::XmlEvent;
 use xml::EventWriter;
 

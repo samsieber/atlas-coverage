@@ -130,7 +130,7 @@ impl<'a> Iterator for MappingData<'a> {
 #[cfg(test)]
 mod test {
     use vlq::decode;
-    use vlq_decode::MappingData;
+    use crate::vlq_decode::MappingData;
 
     #[test]
     fn test_parsing_printer() {

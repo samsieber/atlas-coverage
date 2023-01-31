@@ -1,18 +1,18 @@
-use settings::Settings;
-use model::PuppeteerData;
-use model::SourceMap;
-use source_map::SourceMapSource;
-use vlq_decode;
+use crate::settings::Settings;
+use crate::model::PuppeteerData;
+use crate::model::SourceMap;
+use crate::source_map::SourceMapSource;
+use crate::vlq_decode;
 use std::path::Path;
-use util;
-use lines::calculate_executable_line_mappings;
-use source_map::process_references;
-use lines::calculate_line_coverage;
-use load;
+use crate::util;
+use crate::lines::calculate_executable_line_mappings;
+use crate::source_map::process_references;
+use crate::lines::calculate_line_coverage;
+use crate::load;
 use std::env::current_dir;
 use std::env::args;
 use std::fs;
-use lines::FileCoverage;
+use crate::lines::FileCoverage;
 
 pub fn print_existing(settings: Settings) {
     let args: Vec<String> = args().collect();

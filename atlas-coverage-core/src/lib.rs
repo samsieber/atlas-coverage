@@ -22,13 +22,13 @@ mod util;
 
 use std::path::Path;
 
-use lines::calculate_executable_line_mappings;
-use lines::calculate_line_coverage;
-use lines::FileCoverage;
-use lines::ManyCoverage;
-use model::{PuppeteerData, SourceMap};
-use settings::Settings;
-use source_map::*;
+use crate::lines::calculate_executable_line_mappings;
+use crate::lines::calculate_line_coverage;
+use crate::lines::FileCoverage;
+use crate::lines::ManyCoverage;
+use crate::model::{PuppeteerData, SourceMap};
+use crate::settings::Settings;
+use crate::source_map::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::io::Write;

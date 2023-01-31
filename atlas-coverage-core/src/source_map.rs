@@ -1,10 +1,10 @@
-use util::fast_read;
-use model::SourceMap;
-use settings::Settings;
+use crate::util::fast_read;
+use crate::model::SourceMap;
+use crate::settings::Settings;
 use std::path::Path;
 use std::path::PathBuf;
-use util;
-use settings::Sources;
+use crate::util;
+use crate::settings::Sources;
 use globset::Candidate;
 
 #[derive(Debug, Clone)]
@@ -127,7 +127,7 @@ impl SourceMapSource {
 #[cfg(test)]
 mod test {
 
-    use settings::Sources;
+    use crate::settings::Sources;
     use globset::{Glob, GlobSetBuilder};
 
     #[test]

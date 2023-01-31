@@ -1,6 +1,6 @@
 //use ::serde_derive::{Serialize, Deserialize};
 
-use range::RangeStack;
+use crate::range::RangeStack;
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct PuppeteerData {

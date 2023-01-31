@@ -1,16 +1,16 @@
 use std::fmt;
-use model::PuppeteerData;
+use crate::model::PuppeteerData;
 use serde::de::SeqAccess;
 use serde::de::Visitor;
 use serde::Deserializer;
 use serde_json::Deserializer as JsonDeserializer;
 use std::collections::HashMap;
 
-use load;
-use model;
-use range::Range;
+use crate::load;
+use crate::model;
+use crate::range::Range;
 use std::path::Path;
-use util;
+use crate::util;
 use serde_json::Error;
 
 pub struct RawCoveragePart {
@@ -140,8 +140,8 @@ impl<'va, 'de: 'va> Visitor<'de> for VisitorAppender<'va> {
 
 #[cfg(test)]
 mod test {
-    use load::Loader;
-    use model::PuppeteerData;
+    use crate::load::Loader;
+    use crate::model::PuppeteerData;
     use serde_json::Deserializer as JsonDeserializer;
 
     #[test]
