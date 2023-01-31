@@ -48,7 +48,14 @@ pub fn process_source_map(settings: &Settings, data: PuppeteerData) -> Option<Ve
 
         let source_mapping_path = Path::new(&source_mapping_path);
         if source_mapping_path.exists() {
-            let source_map: SourceMap = util::deserialize_object(source_mapping_path).unwrap();
+            let source_map: SourceMap = match util::deserialize_object(source_mapping_path) {
+                Ok(source_map) => source_map,
+                Err(err) => {
+                    eprintln!("Couldn't deserialize source map for {}", source_mapping_path.to_string_lossy());
+                    eprintln!("{}", err);
+                    return None
+                },
+            };
 
             let references = process_references(&settings, &source_map);
 
