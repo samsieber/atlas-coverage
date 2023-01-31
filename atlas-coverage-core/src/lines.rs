@@ -47,7 +47,7 @@ pub fn calculate_executable_line_mappings(
         .map(|v| v.map(|_| BTreeMap::new()))
         .collect::<Vec<_>>();
 
-    for mut v in vlq_decode::MappingData::new(source_map.mappings.as_bytes()) {
+    for v in vlq_decode::MappingData::new(source_map.mappings.as_bytes()) {
         if let Some(ref source_ref) = v.source {
             if let Some(ref mut source_map) =
                 sources.get_mut(source_ref.source_idx as usize).unwrap()
@@ -137,6 +137,7 @@ impl ManyCoverage {
         xml_writer.into_inner().flush().expect("Could not flush xml file");
     }
 
+    #[allow(dead_code)]
     pub fn write_xml_to_stdout(&self) {
         let stdout = io::stdout();
         let handle = stdout.lock();

@@ -32,7 +32,7 @@ pub struct Sources {
 fn deserialize_globset<'de, D>(deserializer: D) -> Result<GlobSet, D::Error>
     where D: Deserializer<'de>,
 {
-    struct GlobSetVisitor{};
+    struct GlobSetVisitor{}
 
     impl<'de> Visitor<'de> for GlobSetVisitor {
         type Value = GlobSet;
@@ -59,11 +59,11 @@ fn deserialize_globset<'de, D>(deserializer: D) -> Result<GlobSet, D::Error>
     deserializer.deserialize_seq(GlobSetVisitor{})
 }
 
-pub fn from_path(settings_path: impl AsRef<Path>) -> Result<Settings, Box<Error>> {
+pub fn from_path(settings_path: impl AsRef<Path>) -> Result<Settings, Box<dyn Error>> {
     Ok(util::deserialize_object(settings_path)?)
 }
 
-pub fn from_root() -> Result<Settings, Box<Error>> {
+pub fn from_root() -> Result<Settings, Box<dyn Error>> {
     use std::env;
 
     let path = env::current_dir()?;

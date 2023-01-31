@@ -6,7 +6,6 @@ use std::env::current_dir;
 use std::env::args;
 use std::fs;
 use std::io::StdoutLock;
-use std::path::PathBuf;
 
 fn main() {
     let args: Vec<String> = args().collect();

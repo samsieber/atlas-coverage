@@ -31,7 +31,6 @@ use settings::Settings;
 use source_map::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::env::args;
 use std::io::Write;
 use std::io;
 
@@ -106,9 +105,4 @@ pub fn run<P: AsRef<Path>, W: Write>(settings: Settings, json_path: Vec<P>, writ
 
         many_coverage.write_xml(handle);
     }
-}
-
-#[cfg(test)]
-mod test {
-    use std::path::Path;
 }

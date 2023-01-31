@@ -69,7 +69,7 @@ impl RangeStack {
 impl fmt::Display for RangeStack {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for range in &self.ranges {
-            try!(write!(f, " {}", range));
+            write!(f, " {}", range)?;
         }
         Ok(())
     }

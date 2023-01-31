@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate structopt;
 extern crate atlas_coverage_core;
 
@@ -6,12 +5,9 @@ use atlas_coverage_core as e2e_cc;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use std::error::Error;
-use e2e_cc::settings::Settings;
-use std::env;
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::BufWriter;
-use std::io::Write;
 
 /// A basic example
 #[derive(StructOpt, Debug)]
@@ -30,7 +26,7 @@ struct Opt {
     input: PathBuf,
 }
 
-fn main() -> Result<(), Box<Error>>{
+fn main() -> Result<(), Box<dyn Error>>{
     let opt = Opt::from_args();
 
     let settings = if let Some(path) = opt.config {
