@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Sam Sieber <swsieber@gmail.com>"]
 license = "MIT"
 description = "Logic for the atlas-coverage tool"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 xml-rs = "0.8"
